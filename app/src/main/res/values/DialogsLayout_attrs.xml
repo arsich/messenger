@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DialogsLayout">
+        <attr name="vg_horizontalPadding" format="dimension"/>
+        <attr name="vg_avatarSize" format="dimension"/>
+        <attr name="vg_dateTextSize" format="dimension"/>
+        <attr name="vg_dateTextPattern" format="string"/>
+        <attr name="vg_bottomCenterMargin" format="dimension"/>
+        <attr name="vg_bottomAvatarMargin" format="dimension"/>
+    </declare-styleable>
+
+</resources>

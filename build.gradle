@@ -37,4 +37,5 @@ ext {
     // App dependencies
     supportLibraryVersion = '26.+'
     vkSdkVersion = '1.6.9'
+    glideVersion = '3.8.0'
 }

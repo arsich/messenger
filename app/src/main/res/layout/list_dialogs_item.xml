@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ru.arsich.messenger.ui.views.DialogsLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialogContainer"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dialogs_list_item_height"
+    app:vg_horizontalPadding="@dimen/default_padding"
+    app:vg_avatarSize="@dimen/dialogs_list_avatar_size"
+    app:vg_dateTextSize="@dimen/small_font_size"
+    app:vg_bottomCenterMargin="@dimen/dialogs_list_bottom_center_margin"
+    app:vg_bottomAvatarMargin="@dimen/dialogs_list_bottom_margin"
+    app:vg_dateTextPattern="01 Jan">
+    <ru.arsich.messenger.ui.views.MultiImageView
+        android:id="@+id/avatarView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"/>
+    <TextView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/text_items_title" />
+    <TextView
+        android:id="@+id/messageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/text_items_content"/>
+    <TextView
+        android:id="@+id/dateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/text_items_content"
+        android:textSize="@dimen/small_font_size"
+        android:maxLength="6" />
+</ru.arsich.messenger.ui.views.DialogsLayout>

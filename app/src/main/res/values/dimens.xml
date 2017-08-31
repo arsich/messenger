@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="default_padding">16dp</dimen>
+
     <dimen name="login_btn_width">200dp</dimen>
     <dimen name="login_btn_height">40dp</dimen>
+
+    <dimen name="loader_size">70dp</dimen>
+
+    <dimen name="small_font_size">14sp</dimen>
+    <dimen name="regular_font_size">16sp</dimen>
+    <dimen name="header_font_size">18sp</dimen>
+
+    <dimen name="dialogs_list_item_height">75dp</dimen>
+    <dimen name="dialogs_list_avatar_size">55dp</dimen>
+    <dimen name="dialogs_list_bottom_margin">6dp</dimen>
+    <dimen name="dialogs_list_bottom_center_margin">35dp</dimen>
+    <dimen name="avatar_divider">2dp</dimen>
 </resources>
