@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.list_dialogs_item.view.*
 import ru.arsich.messenger.R
+import ru.arsich.messenger.ui.activities.ChatActivity
 import ru.arsich.messenger.ui.views.MultiImageView
 import ru.arsich.messenger.utils.CommonUtils
 import ru.arsich.messenger.utils.ImageReceiver
@@ -35,7 +36,18 @@ class DialogsAdapter(private val dialogs: List<VKChat>): RecyclerView.Adapter<Re
     override fun getItemCount(): Int  = dialogs.size
 
     class DialogViewHolder(view: View) : RecyclerView.ViewHolder(view), ImageReceiver {
+        init {
+            itemView.setOnClickListener {
+                lastDialog?.let {
+                    ChatActivity.startWith(itemView.context, it)
+                }
+            }
+        }
+        private var lastDialog: VKChat? = null
+
         fun bindDialog(dialog: VKChat, locale: Locale?) {
+            lastDialog = dialog
+
             itemView.titleView.text = dialog.title
             itemView.messageView.text = dialog.body
             val date = CommonUtils.getFormattedDate(dialog.date, locale)

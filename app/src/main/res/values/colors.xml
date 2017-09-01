@@ -6,4 +6,6 @@
 
     <color name="darkText">#212121</color>
     <color name="grayText">#b0b0b0</color>
+
+    <color name="whiteOpacity">#88ffffff</color>
 </resources>

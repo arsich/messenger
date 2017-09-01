@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/AppTheme.Toolbar">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:layout_scrollFlags="scroll|enterAlways">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/titleView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="@dimen/title_toolbar_margin_right"
+                android:layout_marginBottom="@dimen/title_toolbar_margin_bottom"
+                style="@style/text_toolbar_title" />
+            <TextView
+                android:id="@+id/subtitleView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="@dimen/title_toolbar_margin_right"
+                android:layout_marginBottom="@dimen/subtitle_toolbar_margin_bottom"
+                style="@style/text_toolbar_subtitle" />
+            <ru.arsich.messenger.ui.views.MultiImageView
+                android:id="@+id/photoView"
+                android:layout_width="@dimen/photo_toolbar_size"
+                android:layout_height="@dimen/photo_toolbar_size"
+                android:layout_marginRight="@dimen/default_padding"
+                android:layout_gravity="right|center_vertical" />
+        </FrameLayout>
+    </android.support.v7.widget.Toolbar>
+</android.support.design.widget.AppBarLayout>

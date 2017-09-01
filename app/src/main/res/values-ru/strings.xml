@@ -2,4 +2,13 @@
     <string name="app_name">Messenger</string>
     <string name="login">Войти</string>
     <string name="dialogs">Список бесед</string>
+
+    <plurals name="members_count">
+        <item quantity="zero">%d участников</item>
+        <item quantity="one">%d участник</item>
+        <item quantity="two">%d участника</item>
+        <item quantity="few">%d участника</item>
+        <item quantity="many">%d участников</item>
+        <item quantity="other">%d участников</item>
+    </plurals>
 </resources>

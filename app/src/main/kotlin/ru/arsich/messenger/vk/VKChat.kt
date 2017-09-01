@@ -25,9 +25,10 @@ class VKChat: VKApiModel, Identifiable, Parcelable {
         this.title = `in`.readString()
         this.admin_id = `in`.readInt()
         this.date = `in`.readInt()
-        this.users = VKList<VKApiUser>().apply {
-            `in`.readTypedList(this, VKApiUser.CREATOR)
-        }
+        this.users = `in`.readParcelable(VKApiUser::class.java.classLoader)
+//        this.users =  VKList<VKApiUser>().apply {
+//            `in`.readTypedList(this, VKApiUser.CREATOR)
+//        }
         this.body = `in`.readString()
         this.photo_100 = `in`.readString()
     }
@@ -58,7 +59,7 @@ class VKChat: VKApiModel, Identifiable, Parcelable {
         dest.writeString(title)
         dest.writeInt(admin_id)
         dest.writeInt(date)
-        dest.writeList(users)
+        dest.writeParcelable(users, flags)
         dest.writeString(body)
         dest.writeString(photo_100)
     }

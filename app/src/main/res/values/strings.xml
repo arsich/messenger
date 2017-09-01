@@ -2,4 +2,13 @@
     <string name="app_name">Messenger</string>
     <string name="login">Login</string>
     <string name="dialogs">Dialogs</string>
+
+    <plurals name="members_count">
+        <item quantity="zero">%d members</item>
+        <item quantity="one">%d member</item>
+        <item quantity="two">%d members</item>
+        <item quantity="few">%d members</item>
+        <item quantity="many">%d members</item>
+        <item quantity="other">%d members</item>
+    </plurals>
 </resources>

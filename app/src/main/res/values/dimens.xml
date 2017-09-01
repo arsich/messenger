@@ -16,4 +16,9 @@
     <dimen name="dialogs_list_bottom_margin">6dp</dimen>
     <dimen name="dialogs_list_bottom_center_margin">35dp</dimen>
     <dimen name="avatar_divider">2dp</dimen>
+
+    <dimen name="photo_toolbar_size">42dp</dimen>
+    <dimen name="title_toolbar_margin_right">62dp</dimen>
+    <dimen name="title_toolbar_margin_bottom">18dp</dimen>
+    <dimen name="subtitle_toolbar_margin_bottom">0dp</dimen>
 </resources>
