@@ -25,7 +25,7 @@ class CommonUtils {
 
             val calendar = Calendar.getInstance()
             val tz = TimeZone.getDefault()
-            calendar.timeInMillis = timestamp.toLong() * 100
+            calendar.timeInMillis = timestamp.toLong() * 1000
             calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.timeInMillis))
 
             val sdfToday = SimpleDateFormat("HH:mm", locale)

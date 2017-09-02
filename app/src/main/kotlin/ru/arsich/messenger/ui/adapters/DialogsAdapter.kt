@@ -10,8 +10,9 @@ import ru.arsich.messenger.R
 import ru.arsich.messenger.ui.activities.ChatActivity
 import ru.arsich.messenger.ui.views.MultiImageView
 import ru.arsich.messenger.utils.CommonUtils
-import ru.arsich.messenger.utils.ImageReceiver
-import ru.arsich.messenger.utils.MultiImageLoader
+import ru.arsich.messenger.utils.images.ImageLoader
+import ru.arsich.messenger.utils.images.MultiImageReceiver
+import ru.arsich.messenger.utils.images.MultiImageLoader
 import ru.arsich.messenger.vk.VKChat
 import java.util.*
 
@@ -35,7 +36,7 @@ class DialogsAdapter(private val dialogs: List<VKChat>): RecyclerView.Adapter<Re
 
     override fun getItemCount(): Int  = dialogs.size
 
-    class DialogViewHolder(view: View) : RecyclerView.ViewHolder(view), ImageReceiver {
+    class DialogViewHolder(view: View) : RecyclerView.ViewHolder(view), MultiImageReceiver {
         init {
             itemView.setOnClickListener {
                 lastDialog?.let {
@@ -44,6 +45,8 @@ class DialogsAdapter(private val dialogs: List<VKChat>): RecyclerView.Adapter<Re
             }
         }
         private var lastDialog: VKChat? = null
+
+        private var lastImageLoader: ImageLoader? = null
 
         fun bindDialog(dialog: VKChat, locale: Locale?) {
             lastDialog = dialog
@@ -56,12 +59,14 @@ class DialogsAdapter(private val dialogs: List<VKChat>): RecyclerView.Adapter<Re
             itemView.avatarView.shape = MultiImageView.Shape.CIRCLE
             itemView.avatarView.dividerWidth = itemView.context.resources.getDimension(R.dimen.avatar_divider)
 
-            val loader = MultiImageLoader(dialog.getAvatars(), this)
-            loader.load(itemView.context.applicationContext)
+            lastImageLoader?.interrupt()
+            lastImageLoader = MultiImageLoader(dialog.getAvatars(), this)
+            lastImageLoader?.load(itemView.context.applicationContext)
         }
 
-        override fun onReceive(bitmaps: List<Bitmap>) {
+        override fun onImagesReceive(bitmaps: List<Bitmap>) {
             itemView.avatarView.addImages(bitmaps)
+            lastImageLoader = null
         }
     }
 }

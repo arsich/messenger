@@ -12,6 +12,10 @@ class WelcomePresenter(private val view: WelcomeView): BasePresenter {
         }
     }
 
+    override fun close() {
+
+    }
+
     fun login(activity: Activity) {
         AuthManager.login(activity)
     }

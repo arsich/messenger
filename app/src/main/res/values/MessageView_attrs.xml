@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MessageView">
+        <attr name="v_isIncomingMessage" format="boolean"/>
+        <attr name="v_incomingSpeechBubble" format="reference"/>
+        <attr name="v_outgoingSpeechBubble" format="reference"/>
+        <attr name="v_incomingSpeechBubbleWithoutCorner" format="reference"/>
+        <attr name="v_outgoingSpeechBubbleWithoutCorner" format="reference"/>
+        <attr name="v_isLastMessage" format="boolean"/>
+        <attr name="v_messageText" format="string"/>
+        <attr name="v_messageTextSize" format="dimension"/>
+        <attr name="v_messageTextColorIncoming" format="reference"/>
+        <attr name="v_messageTextColorOutgoing" format="reference"/>
+        <attr name="v_speechBubbleCornerSize" format="dimension"/>
+        <attr name="v_speechBubbleHorizontalPadding" format="dimension"/>
+        <attr name="v_speechBubbleVerticalPadding" format="dimension"/>
+        <attr name="v_minSpeechBubbleWidth" format="dimension"/>
+        <attr name="v_dateText" format="string"/>
+        <attr name="v_dateTextColor" format="reference"/>
+        <attr name="v_dateTextSize" format="dimension"/>
+        <attr name="v_datePadding" format="dimension"/>
+        <attr name="v_avatarSize" format="dimension"/>
+    </declare-styleable>
+</resources>

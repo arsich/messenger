@@ -12,10 +12,10 @@ class DialogsPresenter(private val view: DialogsView): BasePresenter, DialogsRep
     override fun start() {
         repository = RepositoryInjector.provideDialogsRepository()
         repository.addDialogsSubscriber(this)
-        repository.requestChats()
+        repository.requestDialogs()
     }
 
-    fun close() {
+    override fun close() {
         repository.removeDialogsSubscriber(this)
     }
 

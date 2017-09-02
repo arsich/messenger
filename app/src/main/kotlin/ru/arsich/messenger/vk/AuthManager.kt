@@ -19,5 +19,13 @@ class AuthManager {
         fun login(activity: Activity) {
             VKSdk.login(activity, *scope)
         }
+
+        fun getUserId(): Int {
+            if (VKAccessToken.currentToken() != null) {
+                return VKAccessToken.currentToken().userId.toInt()
+            } else {
+                return -1
+            }
+        }
     }
 }

@@ -81,6 +81,19 @@ class VKChat: VKApiModel, Identifiable, Parcelable {
         return list.toTypedArray()
     }
 
+    fun getAvatarByUserId(userId: Int):String? {
+        var index = 0
+
+        val size = users.size
+        while (index < size) {
+            if (users[index].id == userId) {
+                return users[index].photo_100
+            }
+            index++
+        }
+        return null
+    }
+
     companion object {
 
         @JvmField

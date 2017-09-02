@@ -54,7 +54,7 @@ class DialogsFragment : Fragment(), DialogsView {
         loader.visibility = View.GONE
 
         error.message?.let {
-            Snackbar.make(rootContainer, it, Snackbar.LENGTH_SHORT)
+            Snackbar.make(rootContainer, it, Snackbar.LENGTH_SHORT).show()
         }
     }
 }

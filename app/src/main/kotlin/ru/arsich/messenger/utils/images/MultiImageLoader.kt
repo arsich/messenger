@@ -1,4 +1,4 @@
-package ru.arsich.messenger.utils
+package ru.arsich.messenger.utils.images
 
 
 import android.content.Context
@@ -8,16 +8,13 @@ import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import ru.arsich.messenger.R
 
-class MultiImageLoader(private val urls: Array<String>, private val receiver: ImageReceiver) {
+class MultiImageLoader(private val urls: Array<String>, private val receiver: MultiImageReceiver): ImageLoader {
     private val bitmaps: MutableList<Bitmap> = mutableListOf()
     private var interrupted = false
 
     private var lastTarget: SimpleTarget<Bitmap>? = null
 
-    /**
-     * @param context Use applicationContext for preventing memory leaks
-     */
-    fun load(context: Context) {
+    override fun load(context: Context) {
         if (interrupted) {
             bitmaps.clear()
             return
@@ -25,7 +22,7 @@ class MultiImageLoader(private val urls: Array<String>, private val receiver: Im
 
         val bitmapSize = bitmaps.size
         if (bitmapSize == urls.size) {
-            receiver.onReceive(bitmaps)
+            receiver.onImagesReceive(bitmaps)
             return
         }
 
@@ -49,7 +46,7 @@ class MultiImageLoader(private val urls: Array<String>, private val receiver: Im
                 .into(lastTarget)
     }
 
-    fun interrupt() {
+    override fun interrupt() {
         lastTarget?.let {
             Glide.clear(it)
         }

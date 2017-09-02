@@ -24,7 +24,7 @@ class DialogsRepository {
         dialogsSubscribers.remove(subscriber)
     }
 
-    fun requestChats() {
+    fun requestDialogs() {
         if (dialogsList.isNotEmpty()) {
             sendDialogsListToSubscribers()
             return

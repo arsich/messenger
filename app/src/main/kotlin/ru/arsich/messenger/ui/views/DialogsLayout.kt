@@ -61,7 +61,9 @@ class DialogsLayout : ViewGroup {
 
     fun setDateText(text: String) {
         dateText = text
+        dateWidth = datePaint.measureText(dateText).toInt()
         dateChild?.text = text
+        invalidate()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

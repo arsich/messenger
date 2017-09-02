@@ -6,7 +6,15 @@ object RepositoryInjector {
         DialogsRepository()
     }
 
+    private val chatRepository by lazy {
+        ChatRepository()
+    }
+
     fun provideDialogsRepository(): DialogsRepository {
         return dialogsRepository
+    }
+
+    fun provideChatRepository(): ChatRepository {
+        return chatRepository
     }
 }

@@ -7,14 +7,15 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.toolbar_chat.*
 import ru.arsich.messenger.R
+import ru.arsich.messenger.ui.fragments.ChatFragment
 import ru.arsich.messenger.ui.views.CenterCropDrawable
 import ru.arsich.messenger.ui.views.MultiImageView
-import ru.arsich.messenger.utils.ImageReceiver
-import ru.arsich.messenger.utils.MultiImageLoader
+import ru.arsich.messenger.utils.images.MultiImageReceiver
+import ru.arsich.messenger.utils.images.MultiImageLoader
 import ru.arsich.messenger.vk.VKChat
 
 
-class ChatActivity: AppCompatActivity(), ImageReceiver {
+class ChatActivity: AppCompatActivity(), MultiImageReceiver {
     companion object {
         val EXTRA_VK_CHAT = "vkChat"
 
@@ -35,9 +36,16 @@ class ChatActivity: AppCompatActivity(), ImageReceiver {
         loader.load(applicationContext)
 
         setupToolbar(vkChat.title, vkChat.users.size)
+
+        if (savedInstanceState == null) {
+            val fragment = ChatFragment.create(vkChat)
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.contentFrame, fragment, fragment.tag)
+                    .commit()
+        }
     }
 
-    override fun onReceive(bitmaps: List<Bitmap>) {
+    override fun onImagesReceive(bitmaps: List<Bitmap>) {
         photoView.shape = MultiImageView.Shape.CIRCLE
         photoView.dividerWidth = resources.getDimension(R.dimen.avatar_divider)
         photoView.addImages(bitmaps)
