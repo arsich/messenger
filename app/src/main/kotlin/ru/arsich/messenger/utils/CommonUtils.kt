@@ -2,6 +2,8 @@ package ru.arsich.messenger.utils
 
 import android.content.Context
 import android.os.Build
+import com.vk.sdk.api.model.*
+import ru.arsich.messenger.R
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,6 +36,36 @@ class CommonUtils {
             } else {
                 return sdfDay.format(calendar.time).replace(".", "")
             }
+        }
+
+        fun getMessageAttachmentName(message: VKApiMessage, context: Context): String {
+            if (message.attachments.isEmpty()) {
+                return ""
+            }
+            var result = ""
+            message.attachments.forEach {
+                if (it is VKApiPhoto) {
+                    // no label if photo exists
+                    return ""
+                } else if (result.isEmpty()) {
+                    if (it is VKApiDocument) {
+                        result = context.getString(R.string.document)
+                    } else if (it is VKApiVideo) {
+                        result = context.getString(R.string.video)
+                    } else if (it is VKApiAudio) {
+                        result = context.getString(R.string.audio)
+                    } else if (it is VKApiPoll) {
+                        result = context.getString(R.string.poll)
+                    } else if (it is VKApiPost) {
+                        result = context.getString(R.string.post)
+                    } else if (it is VKApiPhotoAlbum) {
+                        result = context.getString(R.string.album)
+                    } else {
+                        result = ""
+                    }
+                }
+            }
+            return result
         }
     }
 }

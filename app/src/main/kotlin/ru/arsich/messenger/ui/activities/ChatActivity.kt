@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.toolbar_chat.*
 import ru.arsich.messenger.R
 import ru.arsich.messenger.ui.fragments.ChatFragment
@@ -58,5 +59,15 @@ class ChatActivity: AppCompatActivity(), MultiImageReceiver {
         }
         titleView.text = title
         subtitleView.text = resources.getQuantityString(R.plurals.members_count, membersNumber, membersNumber)
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        Glide.with(this).onTrimMemory(level)
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        Glide.with(this).onLowMemory()
     }
 }

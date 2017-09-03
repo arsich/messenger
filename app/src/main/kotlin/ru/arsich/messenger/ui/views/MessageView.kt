@@ -10,7 +10,6 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import ru.arsich.messenger.R
-import java.lang.ref.SoftReference
 
 class MessageView : View {
     constructor(context: Context) : this(context, null)
@@ -19,9 +18,9 @@ class MessageView : View {
         initLayout()
     }
 
-    private lateinit var incomingBubbleDrawable: Drawable
+    private lateinit var incomingBubbleCornerDrawable: Drawable
     private lateinit var incomingBubbleWithoutCornerDrawable: Drawable
-    private lateinit var outgoingBubbleDrawable: Drawable
+    private lateinit var outgoingBubbleCornerDrawable: Drawable
     private lateinit var outgoingBubbleWithoutCornerDrawable: Drawable
 
     private var messageText: String = ""
@@ -83,9 +82,9 @@ class MessageView : View {
         try {
             isIncomingMessage = a.getBoolean(R.styleable.MessageView_v_isIncomingMessage, false)
             isLastMessage = a.getBoolean(R.styleable.MessageView_v_isLastMessage, false)
-            incomingBubbleDrawable = a.getDrawable(R.styleable.MessageView_v_incomingSpeechBubble)
+            incomingBubbleCornerDrawable = a.getDrawable(R.styleable.MessageView_v_incomingSpeechBubbleCorner)
             incomingBubbleWithoutCornerDrawable = a.getDrawable(R.styleable.MessageView_v_incomingSpeechBubbleWithoutCorner)
-            outgoingBubbleDrawable = a.getDrawable(R.styleable.MessageView_v_outgoingSpeechBubble)
+            outgoingBubbleCornerDrawable = a.getDrawable(R.styleable.MessageView_v_outgoingSpeechBubbleCorner)
             outgoingBubbleWithoutCornerDrawable = a.getDrawable(R.styleable.MessageView_v_outgoingSpeechBubbleWithoutCorner)
 
             messageText = a.getString(R.styleable.MessageView_v_messageText)
@@ -236,6 +235,7 @@ class MessageView : View {
         val dateWidth = dateLayout.width + (datePadding * 2).toInt()
 
         var speechBubbleHeight = 0
+        var textHeight = messageLayout.height
         // calculate text and speech bubble sizes
         if (attachmentsBounds.width() == 0) {
             // text without attachments
@@ -247,20 +247,25 @@ class MessageView : View {
             if (textWidth > widthRequirement - noTextSpaceWidth) {
                 textWidth = widthRequirement - noTextSpaceWidth
                 messageLayout = StaticLayout(messageText, messagePaint, textWidth, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false)
+                textHeight = messageLayout.height
             }
             speechBubbleHeight = messageLayout.height + speechBubbleVerticalPadding.toInt() * 2
         } else {
             speechBubbleHeight = messageLayout.height + speechBubbleVerticalPadding.toInt() * 2 + attachmentsBounds.height()
+            if (messageText.isEmpty()) {
+                speechBubbleHeight -= messageLayout.height
+                textHeight = 0
+            }
         }
 
         val speechBubbleWidth = Math.max(speechBubbleCornerSize.toInt() + speechBubbleHorizontalPadding.toInt() * 2 + messageLayout.width, minSpeechBubbleWidth)
 
         val rightBubblePosition = paddingLeft + speechBubbleWidth + avatarSize
-        incomingBubbleDrawable.setBounds(paddingLeft + avatarSize, 0, rightBubblePosition, speechBubbleHeight)
+        incomingBubbleCornerDrawable.setBounds(paddingLeft + avatarSize, 0, paddingLeft + avatarSize + speechBubbleCornerSize.toInt() * 2, speechBubbleCornerSize.toInt() * 2)
         incomingBubbleWithoutCornerDrawable.setBounds(paddingLeft + avatarSize + speechBubbleCornerSize.toInt(), 0, rightBubblePosition, speechBubbleHeight)
 
         val leftBubblePosition = widthRequirement - paddingRight - speechBubbleWidth
-        outgoingBubbleDrawable.setBounds(leftBubblePosition, 0, widthRequirement - paddingRight, speechBubbleHeight)
+        outgoingBubbleCornerDrawable.setBounds(widthRequirement - paddingRight - speechBubbleCornerSize.toInt() * 2, 0, widthRequirement - paddingRight,  speechBubbleCornerSize.toInt() * 2)
         outgoingBubbleWithoutCornerDrawable.setBounds(leftBubblePosition, 0, widthRequirement - paddingRight - speechBubbleCornerSize.toInt(), speechBubbleHeight)
 
         // calculate text position
@@ -272,7 +277,7 @@ class MessageView : View {
         } else {
             firstAttachmentLeft = outgoingMessageTextLeft
         }
-        firstAttachmentTop = speechBubbleVerticalPadding + attachmentsPadding + messageLayout.height
+        firstAttachmentTop = speechBubbleVerticalPadding + attachmentsPadding + textHeight
 
         // calculate date position
         dateIncomingLeft = rightBubblePosition + datePadding
@@ -301,10 +306,9 @@ class MessageView : View {
 
     private fun drawIncomingMessage(canvas: Canvas?) {
         // draw speech bubble
+        incomingBubbleWithoutCornerDrawable.draw(canvas)
         if (isLastMessage) {
-            incomingBubbleDrawable.draw(canvas)
-        } else {
-            incomingBubbleWithoutCornerDrawable.draw(canvas)
+            incomingBubbleCornerDrawable.draw(canvas)
         }
 
         if (isLastMessage && avatarPaint != null) {
@@ -329,10 +333,9 @@ class MessageView : View {
 
     private fun drawOutgoingMessage(canvas: Canvas?) {
         // draw speech bubble
+        outgoingBubbleWithoutCornerDrawable.draw(canvas)
         if (isLastMessage) {
-            outgoingBubbleDrawable.draw(canvas)
-        } else {
-            outgoingBubbleWithoutCornerDrawable.draw(canvas)
+            outgoingBubbleCornerDrawable.draw(canvas)
         }
 
         // draw message text

@@ -11,4 +11,11 @@
         <item quantity="many">%d members</item>
         <item quantity="other">%d members</item>
     </plurals>
+
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="poll">Poll</string>
+    <string name="post">Post</string>
+    <string name="document">Document</string>
+    <string name="album">Album</string>
 </resources>

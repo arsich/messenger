@@ -112,7 +112,11 @@ class ChatAdapter(private val vkChat: VKChat): RecyclerView.Adapter<RecyclerView
 
             itemView.messageView.setIsIncomingMessage(!isMine)
             itemView.messageView.setIsLastMessage(lastMessageFromUser)
-            itemView.messageView.setMessageText(message.body)
+            if (message.body.isNotEmpty()) {
+                itemView.messageView.setMessageText(message.body)
+            } else {
+                itemView.messageView.setMessageText(CommonUtils.getMessageAttachmentName(message, itemView.context))
+            }
             itemView.messageView.setDateText(CommonUtils.getFormattedDate(message.date.toInt(), locale))
 
             handleAttachments(message)

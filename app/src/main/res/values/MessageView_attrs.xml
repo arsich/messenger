@@ -2,8 +2,8 @@
 <resources>
     <declare-styleable name="MessageView">
         <attr name="v_isIncomingMessage" format="boolean"/>
-        <attr name="v_incomingSpeechBubble" format="reference"/>
-        <attr name="v_outgoingSpeechBubble" format="reference"/>
+        <attr name="v_incomingSpeechBubbleCorner" format="reference"/>
+        <attr name="v_outgoingSpeechBubbleCorner" format="reference"/>
         <attr name="v_incomingSpeechBubbleWithoutCorner" format="reference"/>
         <attr name="v_outgoingSpeechBubbleWithoutCorner" format="reference"/>
         <attr name="v_isLastMessage" format="boolean"/>

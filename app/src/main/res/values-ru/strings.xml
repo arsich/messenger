@@ -11,4 +11,11 @@
         <item quantity="many">%d участников</item>
         <item quantity="other">%d участников</item>
     </plurals>
+
+    <string name="video">Видео</string>
+    <string name="audio">Аудиозапись</string>
+    <string name="poll">Голосование</string>
+    <string name="post">Запись на стене</string>
+    <string name="document">Документ</string>
+    <string name="album">Альбом</string>
 </resources>
