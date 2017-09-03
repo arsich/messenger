@@ -17,6 +17,7 @@ class CommonUtils {
         }
 
         fun getFormattedDate(timestamp: Int, locale: Locale?): String {
+            val timestampInMillis = timestamp.toLong() * 1000
             val now = Calendar.getInstance()
             now.set(Calendar.HOUR, 0)
             now.set(Calendar.MINUTE, 0)
@@ -24,13 +25,11 @@ class CommonUtils {
             val today = now.time.time
 
             val calendar = Calendar.getInstance()
-            val tz = TimeZone.getDefault()
-            calendar.timeInMillis = timestamp.toLong() * 1000
-            calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.timeInMillis))
+            calendar.timeInMillis = timestampInMillis
 
             val sdfToday = SimpleDateFormat("HH:mm", locale)
             val sdfDay = SimpleDateFormat("dd MMM", locale)
-            if (today < timestamp * 1000) {
+            if (today < timestampInMillis) {
                 return sdfToday.format(calendar.time).replace(".", "")
             } else {
                 return sdfDay.format(calendar.time).replace(".", "")

@@ -39,6 +39,8 @@ class MultiImageLoader(private val urls: Array<String>, private val receiver: Mu
             }
         }
 
+        // Glide has internal cache inside
+        // we do not need store bitmaps in LruCache here
         Glide.with(context)
                 .load(url)
                 .asBitmap()

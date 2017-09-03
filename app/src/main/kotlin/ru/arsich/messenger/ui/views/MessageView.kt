@@ -10,6 +10,7 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import ru.arsich.messenger.R
+import java.lang.ref.SoftReference
 
 class MessageView : View {
     constructor(context: Context) : this(context, null)
@@ -34,7 +35,7 @@ class MessageView : View {
     private lateinit var messagePaint: TextPaint
     private lateinit var messageLayout: StaticLayout
 
-    private var speechBubbleCornerSize: Float= 0f
+    private var speechBubbleCornerSize: Float = 0f
     private var speechBubbleHorizontalPadding: Float = 0f
     private var speechBubbleVerticalPadding: Float = 0f
 
@@ -61,6 +62,15 @@ class MessageView : View {
     private var avatarY: Float = 0f
 
     private var minSpeechBubbleWidth = 0
+
+    private var attachmentsPadding: Int = 0
+    private var attachmentsBounds: Rect = Rect(0, 0, 0, 0)
+    private var attachmentsBitmaps: MutableList<Bitmap> = mutableListOf()
+    private var attachmentsNumber = 0
+    private var hasAttachmentsBitmap = false
+    private lateinit var attachmentPaint: Paint
+    private var firstAttachmentLeft = 0f
+    private var firstAttachmentTop = 0f
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initValues(context, attrs)
@@ -93,6 +103,7 @@ class MessageView : View {
             dateTextSize = a.getDimensionPixelSize(R.styleable.MessageView_v_dateTextSize, 16)
             dateTextColor = ContextCompat.getColor(context, a.getResourceId(R.styleable.MessageView_v_dateTextColor, 0))
             datePadding = a.getDimensionPixelSize(R.styleable.MessageView_v_datePadding, 0).toFloat()
+            attachmentsPadding = a.getDimensionPixelSize(R.styleable.MessageView_v_attachmentsPadding, 0)
 
             avatarSize = a.getDimensionPixelSize(R.styleable.MessageView_v_avatarSize, 0)
         } finally {
@@ -103,6 +114,14 @@ class MessageView : View {
     private fun initLayout() {
         initMessageText()
         initDateText()
+        initAttachment()
+    }
+
+    private fun initAttachment() {
+        attachmentPaint = Paint()
+        attachmentPaint.isAntiAlias = true
+        attachmentPaint.isFilterBitmap = true
+        attachmentPaint.isDither = true
     }
 
     private fun initMessageText() {
@@ -179,50 +198,93 @@ class MessageView : View {
         invalidate()
     }
 
+    fun clearAttachments() {
+        attachmentsBounds = Rect(0, 0, 0, 0)
+        attachmentsNumber = 0
+        hasAttachmentsBitmap = false
+    }
+
+    fun addAttachmentsRects(rects: List<Rect>) {
+        var maxWidth = 0
+        var height = 0
+        rects.forEach {
+            if (it.width() > maxWidth) {
+                maxWidth = it.width()
+            }
+            height += it.height()
+        }
+
+        height += rects.size * attachmentsPadding
+
+        attachmentsBounds = Rect(0, 0, maxWidth, height)
+        messageLayout = StaticLayout(messageText, messagePaint, maxWidth, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false)
+    }
+
+    fun addAttachmentsBitmaps(bitmaps: List<Bitmap>) {
+        attachmentsBitmaps.clear()
+        hasAttachmentsBitmap = true
+
+        bitmaps.forEach { attachmentsBitmaps.add(0, it) }
+
+        attachmentsNumber = bitmaps.size
+        invalidate()
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthRequirement = MeasureSpec.getSize(widthMeasureSpec)
 
         val dateWidth = dateLayout.width + (datePadding * 2).toInt()
 
-        // calculate text width
-        var noTextSpaceWidth = paddingLeft + paddingRight + speechBubbleCornerSize.toInt() + speechBubbleHorizontalPadding.toInt() * 2 + dateWidth
-        if (isIncomingMessage) {
-            noTextSpaceWidth += avatarSize
-        }
-        var textWidth = messageLayout.width
-        if (textWidth > widthRequirement - noTextSpaceWidth) {
-            textWidth = widthRequirement - noTextSpaceWidth
-            messageLayout = StaticLayout(messageText, messagePaint, textWidth, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false)
+        var speechBubbleHeight = 0
+        // calculate text and speech bubble sizes
+        if (attachmentsBounds.width() == 0) {
+            // text without attachments
+            var noTextSpaceWidth = paddingLeft + paddingRight + speechBubbleCornerSize.toInt() + speechBubbleHorizontalPadding.toInt() * 2 + dateWidth
+            if (isIncomingMessage) {
+                noTextSpaceWidth += avatarSize
+            }
+            var textWidth = messageLayout.width
+            if (textWidth > widthRequirement - noTextSpaceWidth) {
+                textWidth = widthRequirement - noTextSpaceWidth
+                messageLayout = StaticLayout(messageText, messagePaint, textWidth, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false)
+            }
+            speechBubbleHeight = messageLayout.height + speechBubbleVerticalPadding.toInt() * 2
+        } else {
+            speechBubbleHeight = messageLayout.height + speechBubbleVerticalPadding.toInt() * 2 + attachmentsBounds.height()
         }
 
-        val height = messageLayout.height + speechBubbleVerticalPadding.toInt() * 2
-
-        // measure speech bubbles
-        val speechBubbleWidth = Math.max(speechBubbleCornerSize.toInt() + speechBubbleHorizontalPadding.toInt() * 2 +  messageLayout.width, minSpeechBubbleWidth)
+        val speechBubbleWidth = Math.max(speechBubbleCornerSize.toInt() + speechBubbleHorizontalPadding.toInt() * 2 + messageLayout.width, minSpeechBubbleWidth)
 
         val rightBubblePosition = paddingLeft + speechBubbleWidth + avatarSize
-        incomingBubbleDrawable.setBounds(paddingLeft + avatarSize, 0, rightBubblePosition, height)
-        incomingBubbleWithoutCornerDrawable.setBounds(paddingLeft + avatarSize + speechBubbleCornerSize.toInt(), 0, rightBubblePosition, height)
+        incomingBubbleDrawable.setBounds(paddingLeft + avatarSize, 0, rightBubblePosition, speechBubbleHeight)
+        incomingBubbleWithoutCornerDrawable.setBounds(paddingLeft + avatarSize + speechBubbleCornerSize.toInt(), 0, rightBubblePosition, speechBubbleHeight)
 
         val leftBubblePosition = widthRequirement - paddingRight - speechBubbleWidth
-        outgoingBubbleDrawable.setBounds(leftBubblePosition, 0, widthRequirement - paddingRight, height)
-        outgoingBubbleWithoutCornerDrawable.setBounds(leftBubblePosition, 0, widthRequirement - paddingRight - speechBubbleCornerSize.toInt(), height)
+        outgoingBubbleDrawable.setBounds(leftBubblePosition, 0, widthRequirement - paddingRight, speechBubbleHeight)
+        outgoingBubbleWithoutCornerDrawable.setBounds(leftBubblePosition, 0, widthRequirement - paddingRight - speechBubbleCornerSize.toInt(), speechBubbleHeight)
 
         // calculate text position
         incomingMessageTextLeft = paddingLeft + speechBubbleHorizontalPadding + speechBubbleCornerSize + avatarSize
         outgoingMessageTextLeft = leftBubblePosition + speechBubbleHorizontalPadding
 
+        if (isIncomingMessage) {
+            firstAttachmentLeft = incomingMessageTextLeft
+        } else {
+            firstAttachmentLeft = outgoingMessageTextLeft
+        }
+        firstAttachmentTop = speechBubbleVerticalPadding + attachmentsPadding + messageLayout.height
+
         // calculate date position
         dateIncomingLeft = rightBubblePosition + datePadding
         dateOutgoingLeft = leftBubblePosition - datePadding - dateLayout.width
-        dateTop = height - speechBubbleVerticalPadding - dateLayout.height
+        dateTop = speechBubbleHeight - speechBubbleVerticalPadding - dateLayout.height
 
         // calculate avatar position
         avatarX = paddingLeft.toFloat()
         avatarY = paddingTop.toFloat()
         avatarRadius = (avatarSize / 2).toFloat()
 
-        setMeasuredDimension(widthRequirement, height)
+        setMeasuredDimension(widthRequirement, speechBubbleHeight)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -230,6 +292,10 @@ class MessageView : View {
             drawIncomingMessage(canvas)
         } else {
             drawOutgoingMessage(canvas)
+        }
+
+        if (hasAttachmentsBitmap) {
+            drawAttachments(canvas, firstAttachmentLeft, firstAttachmentTop)
         }
     }
 
@@ -280,5 +346,19 @@ class MessageView : View {
         canvas?.translate(dateOutgoingLeft, dateTop)
         dateLayout.draw(canvas)
         canvas?.restore()
+    }
+
+    private var attachmentIndex = 0
+    private var attachmentTop = 0f
+
+    private fun drawAttachments(canvas: Canvas?, left: Float, top: Float) {
+        attachmentIndex = 0
+        attachmentTop = top
+        while (attachmentIndex < attachmentsNumber) {
+            canvas?.drawBitmap(attachmentsBitmaps[attachmentIndex], left, attachmentTop, attachmentPaint)
+            attachmentTop += attachmentsBitmaps[attachmentIndex].height + attachmentsPadding
+
+            attachmentIndex++
+        }
     }
 }

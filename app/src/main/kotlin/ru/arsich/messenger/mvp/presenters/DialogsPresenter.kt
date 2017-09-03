@@ -19,7 +19,15 @@ class DialogsPresenter(private val view: DialogsView): BasePresenter, DialogsRep
         repository.removeDialogsSubscriber(this)
     }
 
+    fun refreshDialogs() {
+        view.showRefreshing()
+
+        repository.clearCache()
+        repository.requestDialogs()
+    }
+
     override fun onDialogsReceived(list: List<VKChat>) {
+        view.hideRefreshing()
         view.showDialogs(list)
     }
 

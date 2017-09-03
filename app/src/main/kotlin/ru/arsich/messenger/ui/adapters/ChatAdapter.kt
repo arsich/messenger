@@ -1,6 +1,7 @@
 package ru.arsich.messenger.ui.adapters
 
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -8,12 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import com.vk.sdk.api.model.VKApiMessage
+import com.vk.sdk.api.model.VKApiPhoto
 import kotlinx.android.synthetic.main.list_chat_item.view.*
 import ru.arsich.messenger.R
 import ru.arsich.messenger.utils.CommonUtils
-import ru.arsich.messenger.utils.images.ImageLoader
-import ru.arsich.messenger.utils.images.SingleImageLoader
-import ru.arsich.messenger.utils.images.SingleImageReceiver
+import ru.arsich.messenger.utils.images.*
 import ru.arsich.messenger.vk.AuthManager
 import ru.arsich.messenger.vk.VKChat
 import java.util.*
@@ -100,16 +100,22 @@ class ChatAdapter(private val vkChat: VKChat): RecyclerView.Adapter<RecyclerView
         }
     }
 
-    class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view), SingleImageReceiver {
+    class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view), SingleImageReceiver, MultiImageReceiver {
         private var lastImageLoader: ImageLoader? = null
+        private var attachmentsLoader: ImageLoader? = null
 
         fun bindMessage(message: VKApiMessage, chat: VKChat, lastMessageFromUser: Boolean, locale: Locale?) {
             val isMine = message.user_id == AuthManager.getUserId()
+
+            itemView.messageView.clearAvatar()
+            itemView.messageView.clearAttachments()
 
             itemView.messageView.setIsIncomingMessage(!isMine)
             itemView.messageView.setIsLastMessage(lastMessageFromUser)
             itemView.messageView.setMessageText(message.body)
             itemView.messageView.setDateText(CommonUtils.getFormattedDate(message.date.toInt(), locale))
+
+            handleAttachments(message)
 
             itemView.messageView.requestLayout()
             itemView.messageView.invalidate()
@@ -121,9 +127,45 @@ class ChatAdapter(private val vkChat: VKChat): RecyclerView.Adapter<RecyclerView
             }
         }
 
+        private fun handleAttachments(message: VKApiMessage) {
+            attachmentsLoader?.interrupt()
+            if (message.attachments.size == 0) {
+                return
+            }
+
+            val rects: MutableList<Rect> = mutableListOf()
+            val urls: MutableList<String> = mutableListOf()
+
+            val MAX_PHOTO_SIZE = 604
+
+            message.attachments.forEach {
+                if (it is VKApiPhoto) {
+                    if (it.width >= it.height) {
+                        val newHeight = (MAX_PHOTO_SIZE / it.width.toFloat() * it.height).toInt()
+                        rects.add(Rect(0,0, MAX_PHOTO_SIZE, newHeight))
+                    } else {
+                        val newWidth = (MAX_PHOTO_SIZE / it.height.toFloat() * it.width).toInt()
+                        rects.add(Rect(0,0, newWidth, MAX_PHOTO_SIZE))
+                    }
+                    urls.add(it.photo_604)
+                }
+            }
+
+            if (rects.size > 0) {
+                itemView.messageView.addAttachmentsRects(rects)
+                attachmentsLoader = MultiImageLoader(urls.toTypedArray(), this)
+                attachmentsLoader?.load(itemView.context.applicationContext)
+            }
+        }
+
         override fun onImageReceive(bitmap: Bitmap, url: String) {
             itemView.messageView.addAvatar(bitmap)
             lastImageLoader = null
+        }
+
+        override fun onImagesReceive(bitmaps: List<Bitmap>) {
+            itemView.messageView.addAttachmentsBitmaps(bitmaps)
+            attachmentsLoader = null
         }
     }
 }

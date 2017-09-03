@@ -41,14 +41,20 @@ class DialogsRepository {
                     dialogsList = (response.parsedModel as VKList<VKChat>).toList()
                     sendDialogsListToSubscribers()
                 }
+                dialogsRequest = null
             }
 
             override fun onError(error: VKError?) {
                 error?.let {
                     sendErrorToDialogsSubscribers(it.httpError)
                 }
+                dialogsRequest = null
             }
         })
+    }
+
+    fun clearCache() {
+        dialogsList = listOf()
     }
 
     private fun sendDialogsListToSubscribers() {

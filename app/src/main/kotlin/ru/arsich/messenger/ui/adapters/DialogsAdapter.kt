@@ -17,9 +17,11 @@ import ru.arsich.messenger.vk.VKChat
 import java.util.*
 
 
-class DialogsAdapter(private val dialogs: List<VKChat>): RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
+class DialogsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var currentLocale: Locale? = null
+
+    private var dialogs: MutableList<VKChat> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         if (currentLocale == null && parent != null) {
@@ -34,7 +36,42 @@ class DialogsAdapter(private val dialogs: List<VKChat>): RecyclerView.Adapter<Re
         }
     }
 
-    override fun getItemCount(): Int  = dialogs.size
+    fun addDialogs(newDialogs: List<VKChat>) {
+        if (dialogs.isEmpty()) {
+            dialogs.addAll(newDialogs)
+            notifyItemRangeInserted(0, newDialogs.size - 1)
+        } else {
+            // add new items
+            val firstDialog = dialogs[0]
+            var newElementIndex = 0
+            while (newElementIndex < newDialogs.size && newDialogs[newElementIndex].date > firstDialog.date) {
+                val newDialog = newDialogs[newElementIndex]
+                var dialogJustChanged = false
+                val previousDialog = dialogs.find { it.id == newDialog.id }
+                if (previousDialog != null) {
+                    // remove old dialog
+                    val oldIndex = dialogs.indexOf(previousDialog)
+                    dialogs.removeAt(oldIndex)
+                    if (oldIndex == newElementIndex) {
+                        dialogJustChanged = true
+                    } else {
+                        notifyItemRemoved(oldIndex)
+                    }
+                }
+
+                // new dialogs
+                dialogs.add(newElementIndex, newDialog)
+                if (dialogJustChanged) {
+                    notifyItemChanged(newElementIndex)
+                } else {
+                    notifyItemInserted(newElementIndex)
+                }
+                newElementIndex++
+            }
+        }
+    }
+
+    override fun getItemCount(): Int = dialogs.size
 
     class DialogViewHolder(view: View) : RecyclerView.ViewHolder(view), MultiImageReceiver {
         init {
@@ -44,6 +81,7 @@ class DialogsAdapter(private val dialogs: List<VKChat>): RecyclerView.Adapter<Re
                 }
             }
         }
+
         private var lastDialog: VKChat? = null
 
         private var lastImageLoader: ImageLoader? = null

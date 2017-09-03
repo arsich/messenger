@@ -12,6 +12,7 @@
     app:v_outgoingSpeechBubble="@drawable/background_speech_bubble_outgoing"
     app:v_outgoingSpeechBubbleWithoutCorner="@drawable/background_speech_bubble_outgoing_without_corners"
     app:v_minSpeechBubbleWidth="@dimen/speech_bubble_min_width"
+    app:v_attachmentsPadding="@dimen/chat_attachment_padding"
     app:v_messageText=""
     app:v_messageTextSize="@dimen/regular_font_size"
     app:v_messageTextColorIncoming="@color/darkText"

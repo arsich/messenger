@@ -21,6 +21,8 @@ class SingleImageLoader(private val url: String, private val receiver: SingleIma
             }
         }
 
+        // Glide has internal cache inside
+        // we do not need store bitmaps in LruCache here
         Glide.with(context)
                 .load(url)
                 .asBitmap()

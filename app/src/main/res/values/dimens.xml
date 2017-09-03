@@ -32,4 +32,5 @@
     <dimen name="speech_bubble_min_width">80dp</dimen>
     <dimen name="chat_divider_big">10dp</dimen>
     <dimen name="chat_divider_small">6dp</dimen>
+    <dimen name="chat_attachment_padding">4dp</dimen>
 </resources>

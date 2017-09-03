@@ -36,8 +36,14 @@ class DialogsFragment : Fragment(), DialogsView {
         val linearLayoutManager = LinearLayoutManager(context)
         dialogsList.layoutManager = linearLayoutManager
 
+        dialogsList.adapter = DialogsAdapter()
+
         presenter = DialogsPresenter(this)
         presenter?.start()
+
+        refreshLayout.setOnRefreshListener {
+            presenter?.refreshDialogs()
+        }
     }
 
     override fun onDetach() {
@@ -47,7 +53,7 @@ class DialogsFragment : Fragment(), DialogsView {
 
     override fun showDialogs(list: List<VKChat>) {
         loader.visibility = View.GONE
-        dialogsList.adapter = DialogsAdapter(list)
+        (dialogsList.adapter as DialogsAdapter).addDialogs(list)
     }
 
     override fun showError(error: Exception) {
@@ -56,5 +62,13 @@ class DialogsFragment : Fragment(), DialogsView {
         error.message?.let {
             Snackbar.make(rootContainer, it, Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    override fun showRefreshing() {
+        refreshLayout.isRefreshing = true
+    }
+
+    override fun hideRefreshing() {
+        refreshLayout.isRefreshing = false
     }
 }

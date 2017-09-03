@@ -15,6 +15,7 @@
         <attr name="v_speechBubbleHorizontalPadding" format="dimension"/>
         <attr name="v_speechBubbleVerticalPadding" format="dimension"/>
         <attr name="v_minSpeechBubbleWidth" format="dimension"/>
+        <attr name="v_attachmentsPadding" format="dimension"/>
         <attr name="v_dateText" format="string"/>
         <attr name="v_dateTextColor" format="reference"/>
         <attr name="v_dateTextSize" format="dimension"/>
