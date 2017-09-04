@@ -33,4 +33,6 @@
     <dimen name="chat_divider_big">10dp</dimen>
     <dimen name="chat_divider_small">6dp</dimen>
     <dimen name="chat_attachment_padding">4dp</dimen>
+
+    <dimen name="toolbar_shadow_height">5dp</dimen>
 </resources>
