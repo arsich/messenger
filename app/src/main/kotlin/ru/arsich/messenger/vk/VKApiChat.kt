@@ -19,8 +19,8 @@ object VKApiChat {
     }
 
     private val code = """
-        var chats = API.messages.getChat({"chat_ids": API.messages.getDialogs({"preview_length":50, "count":100}).items@.message@.chat_id, "fields": "photo_100"});
-        var messages = API.messages.getDialogs({"preview_length":50, "count":100}).items@.message;
+        var chats = API.messages.getChat({"chat_ids": API.messages.getDialogs({"preview_length":50, "count":25}).items@.message@.chat_id, "fields": "photo_100"});
+        var messages = API.messages.getDialogs({"preview_length":50, "count":25}).items@.message;
 
         var b = 0;
         var messagesLength = messages.length;

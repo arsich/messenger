@@ -46,7 +46,13 @@ class DialogsRepository {
 
             override fun onError(error: VKError?) {
                 error?.let {
-                    sendErrorToDialogsSubscribers(it.httpError)
+                    if (it.httpError != null) {
+                        sendErrorToDialogsSubscribers(it.httpError)
+                    } else if (it.apiError != null) {
+                        sendErrorToDialogsSubscribers(Exception(it.apiError.errorMessage))
+                    } else {
+                        sendErrorToDialogsSubscribers(Exception(it.errorMessage))
+                    }
                 }
                 dialogsRequest = null
             }

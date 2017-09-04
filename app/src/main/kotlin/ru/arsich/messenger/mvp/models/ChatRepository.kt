@@ -57,7 +57,13 @@ class ChatRepository {
 
             override fun onError(error: VKError?) {
                 error?.let {
-                    sendErrorToSubscribers(error.httpError)
+                    if (it.httpError != null) {
+                        sendErrorToSubscribers(it.httpError)
+                    } else if (it.apiError != null) {
+                        sendErrorToSubscribers(Exception(it.apiError.errorMessage))
+                    } else {
+                        sendErrorToSubscribers(Exception(it.errorMessage))
+                    }
                 }
             }
         })
